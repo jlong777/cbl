@@ -1,0 +1,52 @@
+<html>
+<title>
+cbl.h						Last changed: 03-09-04
+</title>
+
+<body text="#000000" bgcolor="#FFFFFF">
+
+<pre>
+/* Derived from cbl.h from Cray Inc., used by permission */
+
+typedef struct { long hdrstart; long datstart; long datleng; } ptrinfo;
+
+void cb_amino_translate_ascii(long *db, long dblen, long *am0, long *am1, long *am2);
+void cb_compress(long *dba, long *dbc, long dblen, long mode);
+void cb_copy_bits( long *dest, long doffset, long *src, long soffset, long nbits );
+void cb_countn_ascii(long *db, long dblen, long res[]);
+void cb_fasta_convert(long *db, long dblen, long *dat, long datlen, long *hdr,
+                      long hdrlen, ptrinfo *ptrs, long ptrslen, long *nsegs,
+                      long *errno);
+long cb_free(void *ptr);
+void cb_irand(long *array, long n);
+void * cb_malloc(long nbytes);
+void cb_read_fasta(char *filename,long lun, long **seq, long **hdr, ptrinfo **ptrs,
+                   long *nsegs, long *error);
+void cb_revcompl(long *db, long *dbrc, long dblen, long mode);
+void cb_searchn (long *db, long dblen, long *test, long testlen, long *found, 
+                 long *foundlen, long threshold, long *count);
+void cb_swa_fw(long *dbl, long dbllen, long *dbs, long dbslen, long eg, long og,
+               long *sslookup, long *smax, long **algl, long **algm, long **algs,
+               long *alglen, long *algstl, long *algsts, long *errno);
+void cb_swa_fw_align(long *swtab, long *dbl, long dbllen, long *dbs, long dbslen,
+                     long smax, long **algl, long **algm, long **algs, long *alglen,
+                     long *algstl, long *algsts, long *errno);
+void cb_swa_fw_init(long *dbl, long dbllen, long *dbs, long dbslen, 
+                    long *sslookup, long *swtab, long *gaph, long *gapv);
+void cb_sw_fw_score(long *swtab, long *gaph, long *gapv, long dbllen, long dbslen,
+                    long eg,long eog, long *smax);
+void cb_uncompress(long *dbc, long *db, long dblen, long mode);
+void cb_version(char *p);
+
+#ifdef LONG32
+void cb_repeatn(long *db, long dblen, long repeat_len, long min_repeats,
+                long long *pattern, long *location, long *num_found);
+#endif
+
+#ifdef LONG64
+void cb_repeatn(long *db, long dblen, long repeat_len, long min_repeats,
+                long *pattern, long *location, long *num_found);
+#endif
+</pre>
+</body>
+</html>

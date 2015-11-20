@@ -1,0 +1,121 @@
+<html>
+<title>
+cb_repeatn
+</title>
+
+<body text="#000000" bgcolor="#FFFFFF">
+
+<pre>
+cb_repeatn(3B)                                     Last changed: 03-04-03
+
+NAME
+	cb_repeatn - find short tandem repeats in a nucleotide string
+
+SYNOPSIS
+
+	C/C++:
+
+	#include &lt;<a href="cbl.html">cbl.h</a>>
+	void cb_repeatn(long *db, long dblen, long repeat_len,
+			long min_repeats, long *pattern,
+			long *location, long *num_found);
+
+IMPLEMENTATION
+
+	Version 1.0 for 32/64-bit big/little endian unix platforms.
+
+DESCRIPTION
+
+	cb_repeatn finds regions of a nucleotide string that contain
+	a short pattern of nucleotides repeated consecutively in the
+	region. For each nucleotide starting location, N, in db
+	between the beginning of db and repeat_len*min_repeats locations
+	from the end of db, repeat_len nucleotides in db are replicated
+	min_repeats times and compared to the the original nucleotide
+	sequence. If there is an exact match, the current pattern becomes
+	a candidate. The candidate is checked to determine if it itself is
+	a repeat sequence. For example, if repeat_len is 6 and the
+	candidate is ATATAT, the candidate is itself a repeat of a length
+	2 pattern. If the candidate is an overlay of a smaller size repeat,
+	the candidate is rejected. The list of recent patterns is checked
+	to be sure that the candidate is not the tail end of an already
+	recorded pattern. For example, if at position N=100 the sequence
+	is ACTACTACTACTACTACTACTACT, and repeat_len = 3, a pattern with 8
+	repeats of ACT is recorded. The candidate of 7 repeats starting at
+	location N=103 is rejected. If the candidate survives these filters,
+	then the actual number of times it is repeated is computed. This
+	value, count, is placed in the lower 30 bits of the next free
+	location of the pattern array. The actual repeated nucleotide
+	pattern is placed in bits 30-61 of the same word, and the pattern
+	is left justified in this field. The starting location, N, is
+	placed in the corresponding element of the location array.
+
+	db		input nucleotide data for database string, packed
+			using 2-bit compression (see cb_compress, mode=2).
+
+	dblen		input number of nucleotides packed into db.
+
+	repeat_len	input length, in number of nucleotides, of repeat
+		   	pattern.
+
+	min_repeats	input minimum number of times the pattern must be
+			repeated to qualify as a find.
+
+	pattern		output array of packed words containing the
+			repeated pattern and the number of times it was
+			repeated, in this format:
+
+ 			------------------------------------------
+ 			|00| pattern (32 bits) | count (30 bits) |
+ 			------------------------------------------
+
+			The memory for pattern must be allocated before
+			calling cb_repeatn.
+
+	location	output array of starting locations in db for
+			repeated patterns in the corresponding locations
+			of the pattern array. The first location of db is
+			number 1. The memory for location must be
+			allocated before calling cb_repeatn.
+
+	num_found	on input - size of pattern and location arrays.
+			on output - number of valid entries in the pattern
+			array. If the number of patterns found is larger
+			than the size of the pattern array, num_found is
+			returned as -(number found before overflow), and
+			the remainder of db is not searched. Three error
+			conditions cause the special value of -1 to be
+			returned. See the NOTES below.
+
+NOTES
+
+	cb_repeatn assumes the following conditions:
+
+	repeat_len is in the range 2..16
+
+	num_found > 0 on entry
+
+	dblen > repeat_len*min_repeats
+
+	If any of the three conditions is false on entry, num_found
+	is set to -1 and no search is done.
+
+	If repeat_len*min_repeats > 32 the internal value for min_repeats
+	is reset to 32/repeat_len.
+
+	cb_repeatn is single-threaded (i.e. not tasked) and may be called
+	from within a parallel region.
+
+SEE ALSO
+
+	<a href="cb_compress.html">cb_compress(3B)</a>, <a href="INTRO_LIBCBL.html">INTRO_LIBCBL(3B)</a>
+
+	This man page is available only online.
+</pre>
+<hr>
+<address>
+<a href="index.html">Index of man pages</a><br>
+<a href="license.html">License</a>
+</address>
+</body>
+</html>

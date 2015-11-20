@@ -1,0 +1,57 @@
+<html>
+<title>
+cb_irand
+</title>
+
+<body text="#000000" bgcolor="#FFFFFF">
+
+<pre>
+cb_irand(3B)                                       Last changed: 03-04-03
+
+NAME
+	cb_irand - generates an array of random bits
+
+SYNOPSIS
+
+	C/C++:
+
+	#include &lt;<a href="cbl.html">cbl.h</a>>
+	void cb_irand(long *array, long n);
+
+IMPLEMENTATION
+
+	Version 1.0 for 32/64-bit big/little endian unix platforms.
+
+DESCRIPTION
+
+	cb_irand generates an array of 32/64-bit words with random bit
+	patterns in each word. For each word of output, 2/4 random
+	values are obtained from the system random number generator.
+	For a 32-bit word, bits 10-25 are extracted from the 1st value
+	and are used for bits 0-15 of the word, and bits 11-26 from the
+	2nd value are used for bits 16-31 of the word. For a 64-bit
+	word, bits 12-27 from the 3rd value are used for bits 32-47, and
+	bits 13-28 from the 4th value are used for bits 48-63. 
+
+	array	(output) returned array of 32/64-bit word of random bits.
+
+	n	(input) the number of elements in array to be filled
+		with random bits.
+
+NOTES
+	Internally cb_irand uses rand(). The seed value, and hence the
+	sequence of values, can be modified with srand().
+
+SEE ALSO
+
+	<a href="INTRO_LIBCBL.html">INTRO_LIBCBL(3B)</a>
+
+ This man page is available only online.</pre>
+</pre>
+<hr>
+<address>
+<a href="index.html">Index of man pages</a><br>
+<a href="license.html">License</a>
+</address>
+</body>
+</html>

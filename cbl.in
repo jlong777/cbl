@@ -1,0 +1,64 @@
+/* Derived from cbl.h from Cray Inc. 
+ * used by permission
+ *
+ * University of Alaska Fairbanks
+ * Arctic Region Supercomputing Center (ARSC)
+ * http://www.arsc.edu
+ * 
+ *   This library is free software; you can redistribute it and/or modify
+ *   it under the terms of the GNU Lesser General Public License as
+ *   published by the Free Software Foundation; either version 2.1 of the
+ *   License, or (at your option) any later version.
+ *  
+ *   This library is distributed in the hope that it will be useful, but
+ *   WITHOUT ANY WARRANTY; without even the implied warranty of
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ *   Lesser General Public License for more details.
+ *  
+ *   You should have received a copy of the GNU Lesser General Public
+ *   License along with this library; if not, write to the
+ *   Free Software Foundation, Inc.
+ *   59 Temple Place, Suite 330
+ *   Boston, MA  02111-1307 USA
+ *
+ * $Id: cbl.in,v 1.6 2005/01/13 23:07:20 jlong777 Exp $
+ *
+ */
+
+#ifndef CBL__H
+#define CBL__H
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+
+typedef struct {long hdrstart; long datstart; long datleng;} ptrinfo;
+
+void cb_amino_translate_ascii(long *db, long dblen, long *am0, long *am1, long *am2);
+void cb_compress(long *dba, long *dbc, long dblen, long mode);
+void cb_copy_bits( long *dest, long doffset, long *src, long soffset, long nbits );
+void cb_countn_ascii(long *db, long dblen, long res[]);
+void cb_fasta_convert(long *db, long dblen, long *dat, long datlen, long *hdr,
+                      long hdrlen, ptrinfo *ptrs, long ptrslen, long *nsegs,
+		      long *errno);
+long cb_free(void *ptr);
+void cb_irand(long *array, long n);
+void * cb_malloc(long nbytes);
+void cb_read_fasta(char *filename,long lun, long **seq, long **hdr, ptrinfo **ptrs,
+                   long *nsegs, long *error);
+void cb_revcompl(long *db, long *dbrc, long dblen, long mode);
+void cb_searchn (long *db, long dblen, long *test, long testlen, long *found, 
+                 long *foundlen, long threshold, long *count);
+void cb_swa_fw(long *dbl, long dbllen, long *dbs, long dbslen, long eg, long og,
+               long *sslookup, long *smax, long **algl, long **algm, long **algs,
+               long *alglen, long *algstl, long *algsts, long *errno);
+void cb_swa_fw_align(long *swtab, long *dbl, long dbllen, long *dbs, long dbslen,
+                     long smax, long **algl, long **algm, long **algs, 
+		     long *alglen, long *algstl, long *algsts, long *errno);
+void cb_swa_fw_init(long *dbl, long dbllen, long *dbs, long dbslen, 
+                    long *sslookup, long *swtab, long *gaph, long *gapv);
+void cb_sw_fw_score(long *swtab, long *gaph, long *gapv, long dbllen, long dbslen,
+                    long eg,long eog, long *smax);
+void cb_uncompress(long *dbc, long *db, long dblen, long mode);
+void cb_version(char *p);

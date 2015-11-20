@@ -1,0 +1,213 @@
+<html>
+<title>
+cb_swa_fw
+</title>
+
+<body text="#000000" bgcolor="#FFFFFF">
+<pre>
+cb_swa_fw(3B)                                       Last changed: 04-27-04
+
+NAME
+
+        cb_swa_fw, cb_swa_fw_init, cb_swa_fw_align, cb_sw_fw_score - 
+	compute Smith-Waterman alignment with full word scoring matrix
+
+SYNOPSIS
+
+        C/C++:
+
+        #include &lt;cbl.h&gt;
+        void cb_swa_fw(long *dbl, long dbllen, long *dbs, long dbslen, long eg, 
+	               long og, long *sslookup, long *smax,long **algl, long **algm, 
+		       long **algs, long *alglen, long *algstl, long *algsts, 
+		       long *errno);
+
+        void cb_swa_fw_align(long *swtab, long *dbl, long dbllen, long *dbs,
+	                     long dbslen, long smax, long **algl, long **algm,
+			     long **algs,long *alglen,long *algstl, long *algsts, 
+			     long *errno);
+
+        void cb_swa_fw_init(long *dbl, long dbllen, long *dbs, long dbslen, 
+                            long *sslookup,long *swtab, long *gaph,long *gapv);
+
+        void cb_sw_fw_score(long *swtab, long *gaph, long *gapv, long dbllen, 
+	                    long dbslen, long eg,long eog,long *smax);
+
+IMPLEMENTATION
+
+        Version 1.1 for 32/64-bit big/little endian unix platforms.
+
+DESCRIPTION
+
+        Description for the original Cray cb_swa_fw:
+        cb_swa_fw accepts two strings of ASCII characters, dbl and dbs,
+        which nominally represent amino acids though the actual meaning
+        is determined by the contents of the substitution score lookup
+        table sslookup. The substitution scores and the extend gap penalty,
+        eg, and the open gap penalty, og, are used to compute the Smith-Waterman
+        aligment of the two strings.  This is performed in three steps,
+        one step each for cb_swa_fw_init, cb_sw_fw_score, and cb_swa_fw_align.
+        cb_swa_fw is a wrapper routine that calls these three routines and
+        handles internal allocation and deallocation of work space.
+
+        Description for the portable cb_swa_fw:
+	The portable implementation of this routine is not a wrapper for 
+	cb_swa_fw_init, cb_sw_fw_score, and cb_swa_fw_align, although code
+	to do that is included in the source, but commented out. Instead,
+	the portable version implements the Gotoh optimization of not storing
+	the entire array of substitution scores (swtab). Traceback information
+	is stored in 2 bits per cell. The function signature remains unchanged.
+
+        cb_swa_fw_init accepts two strings, dbl and dbs, and a substitution
+        score lookup table, sslookup, and fills the table swtab with the 
+        substitution scores in rows and columns corresponding to the entries
+        in the dbs and dbl strings. Row and column zero of the swtab are 
+	initialized to zero.
+
+        cb_sw_fw_score accepts the swtab, gaph, and gapv arrays created by
+        cb_swa_fw_init, along with open gap and extend gap penalty values, and
+        replaces the contents of swtab with the Smith-Waterman scores and 
+        traceback information for each cell. It also returns the value in the 
+        largest score in smax.
+
+        cb_swa_fw_align accepts a completed Smith-Waterman score table as created
+        by cb_sw_fw_score and a score, smax, contained in the table. It returns an 
+        alignment that ends on a cell with the score value supplied. In cb_swa_fw 
+        this score is the maximum score returned by cb_sw_fw_score.
+
+        dbl     input string characters representing the longer of the two 
+                sequences to be compared. For the cb_swa_* routines the
+                input is ASCII characters, packed 8 per word.
+
+        dbllen  input number of characters in dbl.
+
+        dbs     input string characters representing the shorter of the two 
+                sequences to be compared. For the cb_swa_* routines the
+                input is ASCII characters, packed 8 per word.
+
+        dbslen  input number of characters in dbs.
+
+        eg      input score penalty for extending a gap. For cb_sw_fw_score,
+                eg must be zero or positive.
+
+        og      input score penalty for opening a gap. If eg and og are both
+                non-zero, they should have the same sign. One gap is scored as 
+		og + eg.
+
+        eog     input combined gap open and gap extend penalty as a zero or
+                positive integer.
+
+        sslookup  input array containing the substitution matrix for the type of
+                data represented by the input strings. sslookup[i][j] is the 
+		substitution score for data entities represented by the i'th and 
+		j'th letters of the alphabet equal to i and j. The declaration for 
+		the array should be 
+		
+		long sslookup[27][32];
+
+                Note that in the cb_swa_* case the leading size is 32 for 
+                performance reasons on Cray hardware, even though only 26 
+		entries are used. The entries in column and row zero are not 
+		used. Entries must be defined for each letter combination that 
+		might appear in the input strings.  The letter 'A' corresponds 
+		to a subscript value of 1.
+
+        smax    the largest cell score computed by cb_sw_fw_score.
+
+        algl    an output array containing letters from dbl and "-" characters to 
+                indicate gaps, corresponding to the alignment that ends at the
+                location of the score smax in the score table. If the same 
+                score appears more than once in the table, the one lowest and 
+                rightmost in the table is used. The memory for algl is allocated 
+		in cb_swa_fw_align. Algl should not be allocated before calling 
+		either cb_swa_fw_align or cb_swa_fw.
+                In C, deallocation of the memory associated with algl must be
+                done with cb_free() to be portable on Cray hardware.
+
+        algs    an output array similar to algl, but containing the alignment
+                characters from the dbs string.
+
+        algm    an output array similar to algl. algm contains a ":" character 
+                in every location where the corresponding characters in algl
+                and algs are the same (independent of case), and a " " (space)
+                character where the corresponding characters in algl and algs 
+                are different.
+
+        alglen  output length, in characters, of the strings in algl, algs, and
+                algm.
+
+        algstl  output location in dbl corresponding to the first character in
+                the algl array. The positions in dbl are numbered starting at 1.
+
+        algsts  output location in dbs corresponding to the first character in
+                the algs array. The positions in dbs are numbered starting at 1.
+                
+        errno   output error number.  If errno is 0, no error occurred.  If
+                errno is non-zero, an error in memory allocation occurred.
+
+        swtab   output (cb_swa_fw_init) or input (cb_sw_fw_score) table of 
+                substitution scores as described above.
+                output (cb_sw_fw_score) or input (cb_swa_fw_align) table of 
+                Smith-Waterman cell scores. These are zero or positive by 
+                construction, and are stored in the lower 60 bits (bits number 59-0) 
+                of each word. The upper bits of the word are set as follows:
+
+                bit 60 = 1 if score was computed as a horizontal gap extension
+        
+                bit 61 = 1 if score was computed as a vertical gap extension
+
+                bit 62 = 1 if score was computed as a sequence extension from
+                           the cell diagonally up and to the let.
+
+                It is possible for more than one of the three bits to be set 
+                if an equal score could be computed by more than one path.
+                If the score is zero, bits 60-62 are all set to zero.
+
+                C/C++ declaration: long swtab[dbllen+1][dbslen+1]
+
+                The memory for swtab must be allocated before calling cb_swa_fw_init.
+                swtab is allocated internally in cb_swa_fw.
+
+        gaph    work array of (dbslen+1) elements used to hold accumulated gap 
+                penalties in the horizontal direction. The memory for gaph must be 
+		allocated before calling cb_sw*_fw_init. gaph is allocated 
+		internaly in cb_swa_fw.
+
+        gapv    work array of (dbslen+1) elements used to hold accumulated gap 
+                penalties in the vertical direction. The memory for gapv must 
+		be allocated before calling cb_sw*_fw_init. gapv is allocated 
+		internaly in cb_swa_fw.
+
+
+NOTES       
+
+        For the cb_swa_fw and cb_swa_fw_init (ASCII input strings) routines,
+        the expected format of the substitution matrix is alphabetical.  If the entries
+        represent amino acids with the usual naming conventions, then the entries
+        involving O and U are not used and can be set to any value.  The "*" character
+        maps to the letter "J", which is otherwise not used. Entries corresponding to 
+        "*" should be placed in the J row and column.
+
+        cb_swa_fw, cb_swa_fw_init, cb_sw_fw_score, and cb_swa_fw_align are 
+        single-threaded (i.e. not tasked) and may be called from within a parallel 
+        region.
+               
+        Some of the Smith-Waterman routines dynamically allocate memory for the
+        user supplied arguments.  If this memory is to be deallocated later, the
+        deallocation must be done properly. In C, the variables must be deallocated 
+	using cb_free() and not the C library free() function in order to be portable
+	on Cray hardware.
+
+        cb_swa_fw and cb_swa_fw_align relpace the contents of the bmm register 
+	on Cray hardware.
+
+SEE ALSO
+
+        <a href="cb_compress.html">cb_compress(3B)</a>, <a href="cb_free.html">cb_free(3B)</a>, <a href="INTRO_LIBCBL.html">INTRO_LIBCBL(3B)</a>
+
+        This man page is available only online.
+</pre>
+<hr>
+<address><a href="index.html">Index of man pages</a></address>
+</body>
+<

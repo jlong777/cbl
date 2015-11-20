@@ -1,0 +1,107 @@
+<html>
+<title>
+cb_uncompress
+</title>
+
+<body text="#000000" bgcolor="#FFFFFF">
+
+<pre>
+cb_uncompress(3B)                                  Last changed: 03-04-03
+
+NAME
+	cb_uncompress - Convert compressed nucleotide or amino acid data
+			to ASCII
+
+SYNOPSIS
+
+	C/C++:
+
+	#include &lt;<a href="cbl.html">cbl.h</a>>
+	void cb_uncompress(long *dbc, long *db, long dblen, long mode);
+
+IMPLEMENTATION
+
+	Version 1.0 for 32/64-bit big/little endian unix platforms.
+
+DESCRIPTION
+
+	cb_uncompress reverses the data compression performed by the
+	cb_compress routine, converting compressed data into ASCII
+	characters suitable for printing. The output array contains
+	uppercase ASCII characters packed 8 per word. Because the
+	compression for modes 2 and 4 converts more than one letter
+	to a particular code, the process of compression followed by
+	uncompression may not result in a replica of the original
+	sequence.
+
+	dbc	(input) packed codes. The number of bits/code and the
+		amount of memory required depends on the mode value.
+
+	db	(output) db contains ASCII text, packed 8 letters/word.
+		Length of db is (dblen+7)/8 for 64-bit words, (dblen+3)/4 
+		for 32-bit words. The final word may be filled with 
+		trailing nulls. The db array must be allocated before 
+		calling cb_uncompress.
+
+	dblen	(input) Number of letters represented in db.
+
+	mode	(input) Allowed values are 2, 4, and 5.
+
+		mode = 2: Each 2-bit code sequence is converted to
+		ASCII as follows:
+
+		00 -> A
+
+		01 -> C
+
+		10 -> T
+
+		11 -> G
+
+
+		mode = 4: Each 4-bit code sequence is converted to
+		ASCII as follows:
+
+		1000 -> A
+		0100 -> C
+		0010 -> G
+		0001 -> T
+		0111 -> B
+		1011 -> D
+		1101 -> H
+		0011 -> K
+		1100 -> M
+		1111 -> N
+		1010 -> R
+		0110 -> S
+		1110 -> V
+		1001 -> W
+		0101 -> Y
+
+
+		mode = 5: Each 5-bit code sequence represents an integer
+		which is converted to an ASCII letter as follows:
+
+		{1,2,3,...,26} -> {A,B,C,...,Z}
+
+		Packing in dbc is 12 letters in each 64-bit word, with the
+		left 4 bits set to zero followed by 5*12 = 60 bits of
+		data.
+
+NOTES
+	cb_uncompress is single-threaded (i.e. not tasked) and may be
+	called from within a parallel region.
+
+SEE ALSO
+
+ 	<a href="cb_compress.html">cb_compress(3B)</a>, <a href="INTRO_LIBCBL.html">INTRO_LIBCBL(3B)</a>
+ 	
+	This man page is available only online.
+</pre>
+<hr>
+<address>
+<a href="index.html">Index of man pages</a><br>
+<a href="license.html">License</a>
+</address>
+</body>
+</html>

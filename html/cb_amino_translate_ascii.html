@@ -1,0 +1,81 @@
+<html>
+<title>
+cb_amino_translate_ascii
+</title>
+
+<body text="#000000" bgcolor="#FFFFFF">
+
+<pre>
+cb_amino_translate_ascii(3B)                       Last changed: 03-04-03
+
+NAME
+
+	cb_amino_translate_ascii - translate nucleotides to amino acids
+
+SYNOPSIS
+
+	C/C++:
+
+	#include &lt;<a href="cbl.html">cbl.h</a>>
+	void cb_amino_translate_ascii(long *db, long dblen,
+				      long *am0, long *am1, long *am2);
+
+
+IMPLEMENTATION
+
+	Version 1.0 for 32/64-bit big/little endian unix platforms.
+
+DESCRIPTION
+
+	cb_amino_translate_ascii converts an input sequence of nucleotides
+	into three sequences of amino acids, one for each reading frame.
+	The input nucleotide sequence must be in the 2-bit compressed
+	format. The output amino acids are represented by ASCII characters.
+	Memory for the output arrays, am0, am1, and am3, must be allocated
+	before calling cb_amino_translate_ascii, and must contain at least
+	(dblen/3+7)/8 words each.
+
+	db	(input) nucleotide sequnece in 2-bit compression format.
+		See <a href="cb_compress.html">cb_compress</a> for details on compression.
+
+	dblen	(input) number of nucleotide codes packed into db.
+
+	am0	(output) sequence of amino acids translated from reading
+		frame 0 of the input nucleotide sequence in db. Reading 
+		rame 0 starts encoding at the first nucleotide in db.
+
+	am1	(output) sequence of amino acids for reading frame 1.
+		Reading frame 1 starts encoding with the second nucleotide
+		in db.
+
+	am2	(output) sequence of amino acids for reading frame 2.
+		Reading frame 2 starts encoding with the third nucleotide
+		in db.
+
+NOTES
+
+	cb_amino_translate_ascii translates nucleotides from the three
+	reading frames in the forward direction. To get the other three
+	reading frames from the reverse complement direction, create a
+	reverse complement version of db using the cb_revcompl routine,
+	and call cb_amino_translate_ascii a second time.
+
+	cb_amino_translate_ascii is single-threaded (i.e. not tasked)
+	and may be called from within a parallel region. If it is called
+	in a parallel region, it must be called once prior to entering
+	the parallel region to set up internal tables. This call can be
+	made with dblen=0.
+
+SEE ALSO
+
+	<a href="cb_compress.html">cb_compress(3B)</a>, <a href="cb_revcompl.html">cb_revcompl(3B)</a>, <a href="INTRO_LIBCBL.html">INTRO_LIBCBL(3B)</a>
+
+	This man page is available only online.</pre>
+</pre>
+<hr>
+<address>
+<a href="index.html">Index of man pages</a><br>
+<a href="license.html">License</a>
+</address>
+</body>
+</html>

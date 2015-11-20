@@ -1,0 +1,75 @@
+<html>
+<title>
+cb_copy_bits
+</title>
+
+<body text="#000000" bgcolor="#FFFFFF">
+
+<pre>
+cb_copy_bits(3B)                                   Last changed: 03-04-03
+
+NAME
+	cb_copy_bits - Copy contiguous sequence of memory bits
+
+SYNOPSIS
+
+	C/C++:
+
+	#include &lt;<a href="cbl.html">cbl.h</a>>
+	void cb_copy_bits(long *dest, long doffset,
+	                  long *src,  long soffset,
+			  long nbits);
+
+IMPLEMENTATION
+
+	Version 1.0 for 32/64-bit big/little endian unix platforms.
+
+DESCRIPTION
+
+	cb_copy_bits copies a sequence of bits from one region of memory
+	to another region of memory. The source and destination regions
+	should not overlap. The starting location for each region may be
+	on an arbitrary bit within a memory word.
+
+	dest	(output) base address of the destination memory array.
+
+	doffset	(input) offset in bits from the beginning of dest where
+		the destination of the copy actually begins. doffset
+		must be zero or positive and may be larger than 64.
+
+	src	(input) base address of the source memory array.
+
+	soffset	(input) offset in bits from the beginnig of src where
+		the source bits of the copy actually begin. soffset
+		must be zero or positive and may be larger than 64.
+
+	nbits	(input) number of bits to be copied.
+
+
+NOTES
+
+	cb_copy_bits is optimized for copying large blocks of unaligned
+	memory.
+
+	The bcopy routine is an alternative to cb_copy_bits for C
+	programmers if the source and destination regions are aligned
+	on byte boundaries and the number of bits copied is a multiple
+	of 8. cb_copy_bits is slightly faster, but bcopy does not have
+	the restriction of non-overlapping regions.
+
+	cb_copy_bits is single-threaded (i.e. not tasked) and may be
+	called from within a parallel region.
+
+SEE ALSO
+
+	<a href="INTRO_LIBCBL.html">INTRO_LIBCBL(3B)</a>
+
+	This man page is available only online.
+</pre>
+<hr>
+<address>
+<a href="index.html">Index of man pages</a><br>
+<a href="license.html">License</a>
+</address>
+</body>
+</html>

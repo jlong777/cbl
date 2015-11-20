@@ -1,0 +1,95 @@
+
+# create libcbl.a archive
+
+libcbl.a: cb_amino_translate_ascii.o cb_compress.o cb_copy_bits.o cb_countn_ascii.o \
+     cb_fasta_convert.o cb_free.o cb_irand.o cb_malloc.o cb_read_fasta.o \
+     cb_repeatn.o cb_revcompl.o cb_searchn.o cb_sw_fw_score.o cb_swa_fw.o \
+     cb_swa_fw_align.o cb_swa_fw_init.o cb_uncompress.o cb_version.o
+	$(AR) $(ARFLAGS) libcbl.a cb_amino_translate_ascii.o cb_compress.o \
+	cb_copy_bits.o cb_countn_ascii.o cb_fasta_convert.o cb_free.o cb_irand.o \
+	cb_malloc.o cb_read_fasta.o cb_repeatn.o cb_revcompl.o cb_searchn.o \
+	cb_sw_fw_score.o cb_swa_fw.o cb_swa_fw_align.o cb_swa_fw_init.o \
+	cb_uncompress.o cb_version.o
+
+# run tests/benchmarks
+
+test: tco tre tse tsu tsw
+	./tsu; ./tco; ./tse; ./tre; ./tsw; rm tco tre tse tsu tsw
+
+install:
+	cp libcbl.a $(INSTALL_DIR)/lib; cp cbl.h $(INSTALL_DIR)/include
+
+cb_amino_translate_ascii.o: cb_amino_translate_ascii.c
+	$(CC) -c $(CFLAGS) $(DEBUG) $(PROF) cb_amino_translate_ascii.c
+cb_compress.o: cb_compress.c
+	$(CC) -c $(CFLAGS) $(DEBUG) $(PROF) cb_compress.c
+cb_copy_bits.o: cb_copy_bits.c
+	$(CC) -c $(CFLAGS) $(DEBUG) $(PROF) cb_copy_bits.c
+cb_countn_ascii.o: cb_countn_ascii.c
+	$(CC) -c $(CFLAGS) $(DEBUG) $(PROF) cb_countn_ascii.c
+cb_fasta_convert.o: cb_fasta_convert.c
+	$(CC) -c $(CFLAGS) $(DEBUG) $(PROF) cb_fasta_convert.c
+cb_free.o: cb_free.c
+	$(CC) -c $(CFLAGS) $(DEBUG) $(PROF) cb_free.c
+cb_irand.o: cb_irand.c
+	$(CC) -c $(CFLAGS) $(DEBUG) $(PROF) cb_irand.c
+cb_malloc.o: cb_malloc.c
+	$(CC) -c $(CFLAGS) $(DEBUG) $(PROF) cb_malloc.c
+cb_read_fasta.o: cb_read_fasta.c
+	$(CC) -c $(CFLAGS) $(DEBUG) $(PROF) cb_read_fasta.c
+cb_repeatn.o: cb_repeatn.c
+	$(CC) -c $(CFLAGS) $(DEBUG) $(PROF) cb_repeatn.c
+cb_revcompl.o: cb_revcompl.c
+	$(CC) -c $(CFLAGS) $(DEBUG) $(PROF) cb_revcompl.c
+cb_searchn.o: cb_searchn.c
+	$(CC) -c $(CFLAGS) $(DEBUG) $(PROF) cb_searchn.c
+cb_sw_fw_score.o: cb_sw_fw_score.c
+	$(CC) -c $(CFLAGS) $(DEBUG) $(PROF) cb_sw_fw_score.c
+cb_swa_fw.o: cb_swa_fw.c
+	$(CC) -c $(CFLAGS) $(DEBUG) $(PROF) cb_swa_fw.c
+cb_swa_fw_align.o: cb_swa_fw_align.c
+	$(CC) -c $(CFLAGS) $(DEBUG) $(PROF) cb_swa_fw_align.c
+cb_swa_fw_init.o: cb_swa_fw_init.c
+	$(CC) -c $(CFLAGS) $(DEBUG) $(PROF) cb_swa_fw_init.c
+cb_uncompress.o: cb_uncompress.c
+	$(CC) -c $(CFLAGS) $(DEBUG) $(PROF) cb_uncompress.c
+cb_version.o: cb_version.c
+	$(CC) -c $(CFLAGS) $(DEBUG) $(PROF) cb_version.c
+
+tco: libcbl.a test_copy.c
+	$(CC) $(DEBUG) $(PROF) -o tco test_copy.c -L./ -lcbl
+tre: libcbl.a test_repeat.c
+	$(CC) $(DEBUG) $(PROF) -o tre test_repeat.c -L./ -lcbl
+tse: libcbl.a test_search.c
+	$(CC) $(DEBUG) $(PROF) -o tse test_search.c -L./ -lcbl
+tsu: libcbl.a test_suite.c
+	$(CC) $(DEBUG) $(PROF) -o tsu test_suite.c -L./ -lcbl
+tsw: libcbl.a test_sw.c
+	$(CC) $(DEBUG) $(PROF) -o tsw test_sw.c -L./ -lcbl
+
+clean: 
+	rm *o libcbl.a
+
+
+# Copyright (C) 2004 University of Alaska Fairbanks
+# Arctic Region Supercomputing Center (ARSC)
+# http://www.arsc.edu
+# 
+#   This library is free software; you can redistribute it and/or modify
+#   it under the terms of the GNU Lesser General Public License as
+#   published by the Free Software Foundation; either version 2.1 of the
+#   License, or (at your option) any later version.
+#  
+#   This library is distributed in the hope that it will be useful, but
+#   WITHOUT ANY WARRANTY; without even the implied warranty of
+#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+#   Lesser General Public License for more details.
+#  
+#   You should have received a copy of the GNU Lesser General Public
+#   License along with this library; if not, write to the
+#   Free Software Foundation, Inc.
+#   59 Temple Place, Suite 330
+#   Boston, MA  02111-1307 USA
+
+# $Id: makefile.in,v 1.6 2004/05/20 20:04:45 jlong777 Exp $
+

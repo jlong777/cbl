@@ -1,0 +1,47 @@
+<html>
+<title>
+cb_version
+</title>
+
+<body text="#000000" bgcolor="#FFFFFF">
+
+<pre>
+cb_version(3B)                                     Last changed: 03-04-03
+
+NAME
+	cb_version - returns the version number of libcbl
+
+SYNOPSIS
+
+	C/C++:
+
+	#include &lt;<a href="cbl.html">cbl.h</a>>
+	void cb_version(char *string);
+
+IMPLEMENTATION
+
+	Version 1.0 for 32/64-bit big/little endian unix platforms.
+
+DESCRIPTION
+
+	cb_version returns the version number of the library used to link
+	the executing program. The value is a character string of up to
+	5 characters, such as "1.0".
+
+	string	(output) character pointer pointing to a block of memory
+		with at least 6 bytes of space. The returned string is
+		null terminated.
+
+SEE ALSO
+
+	<a href="INTRO_LIBCBL.html">INTRO_LIBCBL(3B)</a>
+
+	This man page is available only online.
+</pre>
+<hr>
+<address>
+<a href="index.html">Index of man pages</a><br>
+<a href="license.html">License</a>
+</address>
+</body>
+</html>

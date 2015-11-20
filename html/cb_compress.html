@@ -1,0 +1,132 @@
+<html>
+<title>
+cb_compress
+</title>
+
+<body text="#000000" bgcolor="#FFFFFF">
+
+<pre>
+cb_compress(3B)                                    Last changed: 03-04-03
+
+NAME
+	cb_compress - Compresses nucleotide or amino acid ASCII data
+
+SYNOPSIS
+
+	C/C++:
+
+	#include &lt;<a href="cbl.html">cbl.h</a>>
+	void cb_compress(long *db, long *dbc, long dblen, long mode);
+
+
+IMPLEMENTATION
+
+	Version 1.0 for 32/64-bit big/little endian unix platforms.
+
+DESCRIPTION
+
+	cb_compress compresses nucleotide or amino acid ASCII data. The
+	input array is assumed to be a sequence of upper case or lower
+	case ASCII letters (A..Z or a..z). Each letter is translated
+	into a code with the number of bits determined by the mode
+	parameter. Lower case letters are translated into the same code
+	as the corresponding upper case letters. The codes are packed
+	into the output array as specified below. A special mode, 6, is
+	supplied to convert data packed in 4-bit fields into data
+	packed in 2-bit fields.
+
+	db	(input) If mode = 2, 4, or 5, db contains ASCII text,
+		packed 8 letters/word. Length of db is (dblen+7)/8
+		(64-bit words). if mode = 6, db contains letters packed
+		in the 4-bit encoding scheme described below, packed 16
+		letters/word. Length of db is (dblen+15)/16
+		(64-bit words). The final word may be filled with
+		trailing nulls.
+
+	dbc	(output) packed codes. The number of bits/code and the
+		amount of memory required depends on the mode value. The
+		dbc array must be allocated before calling cb_compress.
+
+	dblen	(input) Number of letters represented in db.
+
+	mode	(input) Allowed values are 2, 4, 5, and 6.
+
+		mode = 2: Each ASCII letter is converted to a 2-bit code
+		as follows:
+
+		00 &lt;- A (also H, I, P, Q, X, Y)
+
+		01 &lt;- C (also B, J, K, R, S, Z)
+
+		10 &lt;- T (also D, E, L, M, U)
+
+		11 &lt;- G (also F, N, O, V, W)
+
+		Length of dbc must be >= (dblen+31)/32 (64-bit words).
+
+
+		mode = 4: Each ASCII letter is converted to a 4-bit code
+		as follows:
+
+		1000 &lt;- A
+		0100 &lt;- C
+		0010 &lt;- G
+		0001 &lt;- T, U
+		0111 &lt;- B = C or G or T
+		1011 &lt;- D = A or G or T
+		1101 &lt;- H = A or C or T
+		0011 &lt;- K = G or T
+		1100 &lt;- M = A or C
+		1111 &lt;- N = A or C or G or T
+		1010 &lt;- R = A or G
+		0110 &lt;- S = C or G
+		1110 &lt;- V = A or C or G
+		1001 &lt;- W = A or T
+		0101 &lt;- Y = C or T
+		1111 &lt;- X (same as N)
+		1111 &lt;- All other letters
+
+		Length of dbc must be >= (dblen+15)/16 (64-bit words).
+
+
+		mode = 5: Each ASCII letter is converted to a 5-bit code
+		containing the integer sequence number of the letter
+		in the alphabet:
+
+		{A,B,C,...,Z} -> {1,2,3,...,26}
+
+		{a,b,c,...,z} -> {1,2,3,...,26}
+
+		Packing is 12 letters in each 64-bit word, with the
+		left 4 bits set to zero followed by 5*12 = 60 bits of
+		data.
+
+		Length of dbc must be >= (dblen+11)/12 (64-bit words).
+
+
+		mode = 6: Each input letter is assumed to be encoded using
+		the 4-bit code described under mode=4 above. The result
+		is the 2-bit code described under mode=2 above.
+
+		Length of dbc must be >= (dblen+31)/32 (64-bit words).
+
+NOTES
+	cb_compress is single-threaded (i.e. not tasked) and may be called
+	from within a parallel region. Before cb_compress is called in a
+	parallel region with mode=4, it must have been previously called
+	outside a parallel region with mode=4 to initialize internal tables.
+	This initial call can be made with dblen=0.
+
+SEE ALSO
+
+	<a href="cb_uncompress.html">cb_uncompress(3B)</a>, <a href="INTRO_LIBCBL.html">INTRO_LIBCBL(3B)</a>
+
+	This man page is available only online.
+</pre>
+<hr>
+<address>
+<a href="index.html">Index of man pages</a><br>
+<a href="license.html">License</a>
+</address>
+</body>
+</html>

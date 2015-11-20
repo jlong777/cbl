@@ -1,0 +1,84 @@
+<html>
+<title>
+cb_revcompl
+</title>
+
+</head>
+<body text="#000000" bgcolor="#FFFFFF">
+
+<pre>
+cb_revcompl(3B)                                    Last changed: 03-04-03
+
+NAME
+	cb_revcompl - Reverse complements compressed nucleotide data.
+
+SYNOPSIS
+
+	C/C++:
+
+	#include &lt;<a href="cbl.html">cbl.h</a>>
+	void cb_revcompl(long *db, long *dbrc, long dblen, long mode);
+
+IMPLEMENTATION
+
+	Version 1.0 for 32/64-bit big/little endian unix platforms.
+
+DESCRIPTION
+
+	cb_revcompl reverses the order of the nucleotides in db and
+	complements each nucleotide, and stores the result in dbrc.
+	The input data is assumed to be stored in compressed form. See
+	the man page for <a href="cb_compress.html">cb_compress(3B)</a> for details on nucleotide
+	compression. The complement operation changes each nucleotide
+	as follows:
+
+	A -> T
+	C -> G
+	T -> A
+	G -> C
+
+	For 4-bit encoded data, additional letters are
+	transformed according to these same rules. For
+	example,
+
+	R (A or G) -> V (T or C)
+
+
+	db	(input) nucleotide sequence in either 2-bit or 4-bit
+		compressed format. See <a href="cb_compress.html">cb_compress(3B)</a> for details on
+		compression. Length of db, in 64-bit words is
+		(dblen+31)/32 for mode=2, and (dblen+15)/16 for mode=4.
+
+	dbrc	(output) nucleotide sequence in same compression
+		format as db. The result in dbrc is the data from
+		db in reverse order, and also each nucleotide is
+		complemented. The data in dbrc is shifted so that
+		the initial character is left justified in the first
+		word of dbrc. Length of dbrc is the same as length
+		of db, and dbrc must be allocated by the caller.
+
+	dblen	(input) number of nucleotide codes packed into db.
+
+	mode	(input) allowed values are 2 and 4, and indicates the
+		number of bits used to represent each nucleotide
+		in the db and dbrc arrays. See the <a href="cb_compress.html">cb_compress(3B)</a>
+		man page for a detailed explanation of the compression
+		mappings for mode values 2 and 4.
+
+NOTES
+	cb_revcompl is single-threaded (i.e. not tasked) and may be called
+	from within a parallel region.
+
+SEE ALSO
+
+	<a href="cb_compress.html">cb_compress(3B)</a>, <a href="INTRO_LIBCBL.html">INTRO_LIBCBL(3B)</a>
+
+	This man page is available only online.
+</pre>
+<hr>
+<address>
+<a href="index.html">Index of man pages</a><br>
+<a href="license.html">License</a>
+</address>
+</body>
+</html>

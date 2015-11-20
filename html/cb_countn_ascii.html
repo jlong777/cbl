@@ -1,0 +1,73 @@
+<html>
+<title>
+cb_countn_ascii
+</title>
+
+<body text="#000000" bgcolor="#FFFFFF">
+
+<pre>
+cb_countn_ascii(3B)                                Last changed: 03-04-03
+
+NAME
+	cb_countn_ascii - counts A, C, T, G, and N characters in a string
+
+SYNOPSIS
+
+	C/C++:
+
+	#include &lt;<a href="cbl.html">cbl.h</a>>
+	void cb_countn_ascii(long *dba, long dblen, long res[]);
+
+IMPLEMENTATION
+
+	Version 1.0 for 32/64-bit big/little endian unix platforms.
+
+DESCRIPTION
+
+	cb_countn_ascii counts the number of occurrences of the letters
+	A, C, T, G, and N in a string containing ASCII letters. Lower
+	case letters are treated as equivalent to the corresponding upper
+	case letters, and are included in the counts. The number of
+	letters not included in the set of five counted can be obtained
+	by subtracting the sum of the five results from dblen.
+
+	dba	(input) sequence of ASCII letters packed 8/word with
+		possible null characters in the end of the final word.
+
+	dblen	(input) number of nucleotides packed into dba.
+
+	res	(output) array of at least 5 elements containing the
+		counts of the common nucleotide codes as follows:
+
+		res[0] = number of A and a characters in dba.
+		res[1] = number of C and c characters in dba.
+		res[2] = number of T and t characters in dba.
+		res[3] = number of G and g characters in dba.
+		res[4] = number of N and n characters in dba.
+
+		Memory for res must be allocated before calling
+		cb_countn_ascii.
+
+NOTES
+
+	cb_countn_ascii provides a quick way to profile a set of
+	nucleotide data to determine how many ambiguous codes are
+	present, and also to check for a relative excess or deficiency
+	of C/G letters.
+
+	cb_countn_ascii is single-threaded (i.e. not tasked) and may be
+	called from within a parallel region.
+
+SEE ALSO
+
+	<a href="INTRO_LIBCBL.html">INTRO_LIBCBL(3B)</a>
+
+	This man page is available only online.
+</pre>
+<hr>
+<address>
+<a href="index.html">Index of man pages</a><br>
+<a href="license.html">License</a>
+</address>
+</body>
+</html>

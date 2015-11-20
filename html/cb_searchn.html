@@ -1,0 +1,98 @@
+<html>
+<title>
+cb_searchn
+</title>
+
+<body text="#000000" bgcolor="#FFFFFF">
+
+<pre>
+cb_searchn(3B)                                     Last changed: 03-04-03
+
+NAME
+	cb_searchn - gap-free nucleotide search allowing mismatches
+
+SYNOPSIS
+
+	C/C++:
+
+	#include &lt;<a href="cbl.html">cbl.h</a>>
+	void cb_searchn(long *db, long dblen, long *test, long testlen,
+			long *found, long *foundlen, long threshold,
+			long *count);
+
+IMPLEMENTATION
+
+	Version 1.0 for 32/64-bit big/little endian unix platforms.
+
+DESCRIPTION
+
+	cb_searchn returns locations in a database string of
+	nucleotides that approximately match a test string of
+	nucleotides. For each nucleotide starting location, N, in db
+	between the beginning of db and testlen locations from the end
+	of db, the subsequence in db of length testlen is compared to test.
+	The number of corresponding positions in db and test where the
+	nucleotides do not match, S, is computed. If S is &lt; or = threshold
+	this alignment is considered a match and N is placed in the next
+	free location of found, and S is placed in the corresponding
+	location in count. The range of values for N is 0..dblen-testlen.
+	The possible range of values for S is 0..threshold.
+
+	db	input nucleotide data for database string, packed using
+		2-bit compression (see cb_compress, mode=2).
+
+	dblen	nput number of nucleotides packed into db.
+
+	test	input nucleotide data for test string, packed using
+		2-bit compression (see cb_compress, mode=2).
+
+	testlen	input number of nucleotides packed into test.
+
+	found	output list of starting locations in db where test matches
+		as defined above. The first location of db is number 0.
+		The memory for found must be allocated before calling
+		cb_searchn.
+
+	foundlen on input, size of found and count arrays
+		 output number of valid entries in the found array. If the
+		 number of matches found is larger that the size of the
+		 found array, foundlen is returned as -(number found before
+		 overflow). In this case, the trailing part of db will not
+		 be searched. This should be treated as an error condition
+		 by the caller.
+
+	threshold input threshold number of differences that defines a
+		  match. See description above.
+
+	count	output number of differences between db and test for the
+		substring of db as specified by the corresponding entry in
+		the found array. The number of valid entries is foundlen
+		if no error occurs. (See foundlen above.) The memory for
+		count must be allocated before calling cb_searchn.
+
+NOTES
+
+	cb_searchn assumes dblen > testlen > 0 and
+	threshold &lt; testlen; usually threshold &lt;&lt; testlen.
+
+	If threshold is set to 0, cb_searchn returns only exact matches.
+
+	If the test string length is &lt;= 32, a special algorithm is
+	used which is faster and uses less memory bandwidth.
+
+	cb_searchn is single-threaded (i.e. not tasked) and may be called
+	from within a parallel region.
+
+SEE ALSO
+
+	<a href="cb_compress.html">cb_compress(3B)</a>, <a href="INTRO_LIBCBL.html">INTRO_LIBCBL(3B)</a>
+
+	This man page is available only online.
+</pre>
+<hr>
+<address>
+<a href="index.html">Index of man pages</a><br>
+<a href="license.html">License</a>
+</address>
+</body>
+</html>
